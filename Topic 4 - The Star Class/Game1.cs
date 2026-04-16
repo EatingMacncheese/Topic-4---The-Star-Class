@@ -28,27 +28,31 @@ namespace Topic_4___The_Star_Class
             // TODO: Add your initialization logic here
             star1 = new Star(starTexture, new Rectangle(100, 100, 2, 2), new Vector2(-2, 0));
             shipRect = new Rectangle(50, 250, 150, 40);
+            
+
             window = new Rectangle(0, 0, 800, 600);
+            _graphics.PreferredBackBufferWidth = window.Width;
+            _graphics.PreferredBackBufferHeight = window.Height;
+            _graphics.ApplyChanges();
+            base.Initialize();
+
             stars = new List<Star>();
             for (int i = 0; i < 150; i++)
             {
                 int x, y;
                 x = generator.Next(window.Width);
                 y = generator.Next(window.Height);
-                Rectangle star = new Rectangle(x, y, 3, 3);
+                Rectangle star = new Rectangle(x, y, generator.Next(1, 5), generator.Next(1, 5));
                 stars.Add(new Star(starTexture, star, new Vector2(-2, 0)));
             }
-            _graphics.PreferredBackBufferWidth = window.Width;
-            _graphics.PreferredBackBufferHeight = window.Height;
-            _graphics.ApplyChanges();
-            base.Initialize();
+
         }
 
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             shipTexture = Content.Load<Texture2D>("Images/enterprise");
-            
+            starTexture = Content.Load<Texture2D>("Images/circle");
 
             // TODO: use this.Content to load your game content here
         }
@@ -57,10 +61,14 @@ namespace Topic_4___The_Star_Class
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+
             foreach (Star star in stars)
-                star.Update();
-            if (Star.Location.Right < 0)
-                star.X = window.Width;
+            {
+                star.Update(window);
+               
+            }
+                
+           
 
             // TODO: Add your update logic here
 
@@ -71,9 +79,16 @@ namespace Topic_4___The_Star_Class
         {
             GraphicsDevice.Clear(Color.Black);
             _spriteBatch.Begin();
-            Star.Draw(_spriteBatch);
-            foreach (var star in stars)
+            
+
+            
+
+            foreach (Star star in stars)
                 star.Draw(_spriteBatch);
+
+
+
+
             _spriteBatch.Draw(shipTexture, shipRect, Color.White);
             _spriteBatch.End();
             // TODO: Add your drawing code here
